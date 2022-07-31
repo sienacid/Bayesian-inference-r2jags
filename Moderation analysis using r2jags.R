@@ -1,7 +1,28 @@
 #Clear the global environment
 rm(list = ls())
+mypackages <- c("tidyverse","rjags","posterior","bayesplot","R2jags","MCMCvis",
+                "mcmcplots","standardize","jagsUI","rstanarm","performance",
+                "loo","rstantools","CalvinBayes","bayesrules","ggplot2",
+                "ggstance","ggformula","superdiag",
+                "dplyr","plyr","skimr","corrplot","Hmisc","xlsx","openxlsx",
+                "naniar","knitr","kableExtra","finalfit")
+for (p in mypackages){
+  if(!require(p, character.only = TRUE)){
+    install.packages(p)
+    library(p, character.only = TRUE)
+  }
+}
 
 ####Total cases - ABUSE #########
+fulldata<-read.csv('fulldata_recode.csv')
+
+fulldata<-fulldata%>%
+  dplyr::select(-id_nspn,-nssi_cat_type,-ethnic_final)
+
+#scale data
+fulldata[,c(4:6,8:9,39)]<-scale(fulldata[,c(4:6,8:9,39)],center=TRUE, scale=TRUE)
+fulldata[,c(7,10:38,40:45)]<-0.5*scale(fulldata[,c(7,10:38,40:45)],center=TRUE, scale=TRUE)
+
 model1 <- tempfile()
 
 writeLines("
@@ -120,6 +141,7 @@ for (i in 1:n) {
  fprec  ~ dgamma(0.001,0.001)
  aprec  ~ dgamma(0.001,0.001)
  
+ #Derived parameters
  fit <- sum(res[])
  fit.new <- sum(res.new[])
 
@@ -145,13 +167,14 @@ ini <- list(list(alpha=0, beta_abutot=0, beta_agehqpdone=0, beta_sex=0,
 params <- c("alpha","or_abutot","or_le","or_agehqpdone", "or_sex",
             "or_wemwbs","or_beh",
             "or_bis","or_inter1","fit","fit.new")
-
+#Run analysis
 fit1 <- jags(data = dat, parameters.to.save=params, n.chains = 2, 
              n.iter = 15000, n.adapt = 500,
              n.burnin = 1000, model.file = model1, n.thin = 1)
 
 fit1
 
+#Posterior predictive check plot
 pp.check(fit1,observed='fit',simulated='fit.new',
          main="Posterior Predictive Check for Abuse(total) - NSSI(total)",cex.main=0.9,cex.lab=1.0)
 
@@ -298,12 +321,14 @@ params <- c("alpha","or_abutot","or_le","or_agehqpdone", "or_sex",
             "or_wemwbs","or_beh",
             "or_bis","or_inter1","fit","fit.new")
 
+#Run analysis
 fit2 <- jags(data = dat_new, inits=ini_new,parameters.to.save=params, n.chains = 2, 
              n.iter = 20000, n.adapt = 500,
              n.burnin = 1000, model.file = model2, n.thin = 1)
 
 fit2
 
+#Posterior predictive check plot
 pp.check(fit2,observed='fit',simulated='fit.new',
          main="Posterior Predictive Check for Abuse(total) - NSSI (new onset)",cex.main=0.9,cex.lab=1.0)
 
