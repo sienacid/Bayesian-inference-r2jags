@@ -1,5 +1,5 @@
 
-### Mediation - Adjusted - Abuse-NSSI (total) #######
+### Mediation - Adjusted - Abuse-NSSI (total) #####
 
 fulldata<-read.csv('fulldata_recode.csv')
 
