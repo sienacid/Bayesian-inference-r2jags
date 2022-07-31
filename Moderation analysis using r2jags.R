@@ -1,5 +1,4 @@
 #Clear the global environment
-rm(list = ls())
 mypackages <- c("tidyverse","rjags","posterior","bayesplot","R2jags","MCMCvis",
                 "mcmcplots","standardize","jagsUI","rstanarm","performance",
                 "loo","rstantools","CalvinBayes","bayesrules","ggplot2",
