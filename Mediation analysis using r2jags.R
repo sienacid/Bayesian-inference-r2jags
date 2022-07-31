@@ -1,5 +1,4 @@
-
-### Mediation - Adjusted - Abuse-NSSI (total) #####
+### Mediation - Adjusted - Overcontrol-NSSI (total) #####
 mypackages <- c("tidyverse","rjags","posterior","bayesplot","R2jags","MCMCvis",
                 "mcmcplots","standardize","jagsUI","rstanarm","performance",
                 "loo","rstantools","CalvinBayes","bayesrules","ggplot2",
@@ -24,7 +23,6 @@ fulldata[,c(7,10:38,40:45)]<-0.5*scale(fulldata[,c(7,10:38,40:45)],center=TRUE, 
 
 fulldata$nssi_binary_t2<-as.numeric(fulldata$nssi_binary_t2)
 
-#### Adjusted- total- control ########
 modfile <- tempfile()
 writeLines("
 model{
